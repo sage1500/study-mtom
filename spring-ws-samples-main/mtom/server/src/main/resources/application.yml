@@ -1,0 +1,8 @@
+
+server:
+  servlet:
+    context-path: /mtom-server
+
+logging:
+  level:
+    org.springframework.ws: DEBUG

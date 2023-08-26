@@ -1,0 +1,17 @@
+*.ipr
+*.iws
+*.iml
+.clover
+activemq-data
+*.hsp
+atlassian-ide-plugin*.xml
+
+.idea
+
+/build
+/*/build
+/*/*/build
+/*/*/*/build
+.gradle
+
+target
