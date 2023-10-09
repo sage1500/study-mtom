@@ -22,18 +22,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.StopWatch;
-import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
-import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
+import org.springframework.ws.client.WebServiceClientException;
+import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.client.support.interceptor.ClientInterceptor;
+import org.springframework.ws.client.support.interceptor.ClientInterceptorAdapter;
+import org.springframework.ws.context.MessageContext;
 
 import jakarta.activation.DataHandler;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Simple client that demonstrates MTOM by invoking {@code StoreImage} and {@code LoadImage} using a WebServiceTemplate
@@ -43,7 +44,9 @@ import jakarta.activation.DataHandler;
  * @author Arjen Poutsma
  */
 @SpringBootApplication
-public class SaajMtomClient extends WebServiceGatewaySupport {
+@RequiredArgsConstructor
+@Slf4j
+public class SaajMtomClient {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SaajMtomClient.class, args);
@@ -51,71 +54,51 @@ public class SaajMtomClient extends WebServiceGatewaySupport {
 
 	@Bean
 	CommandLineRunner invoke(SaajMtomClient saajClient) {
-
 		return args -> {
 			saajClient.storeContent();
 			saajClient.loadContent();
 		};
 	}
 
-	private static final Logger logger = LoggerFactory.getLogger(SaajMtomClient.class);
-
+	private final WebServiceTemplate webServiceTemplate;	
+	
 	private ObjectFactory objectFactory = new ObjectFactory();
-	private StopWatch stopWatch = new StopWatch(ClassUtils.getShortName(getClass()));
-
-	public SaajMtomClient(SaajSoapMessageFactory messageFactory) {
-		super(messageFactory);
-	}
 
 	public void storeContent() {
-
 		StoreContentRequest storeContentRequest = this.objectFactory.createStoreContentRequest();
 
 		storeContentRequest.setName("spring-ws-logo");
 		storeContentRequest
 				.setContent(new DataHandler(Thread.currentThread().getContextClassLoader().getResource("spring-ws-logo.png")));
 
-		this.stopWatch.start("store");
-
-//		getWebServiceTemplate().marshalSendAndReceive("http://localhost:8080/mtom-server/services/store", storeContentRequest);
-		getWebServiceTemplate().marshalSendAndReceive("http://localhost:8080/mtom-server/services/load", storeContentRequest);
-
-		this.stopWatch.stop();
-
-		logger.info(this.stopWatch.prettyPrint());
+		var clientInterceptor = new ClientInterceptorAdapter() {
+			@Override
+			public void afterCompletion(MessageContext messageContext, Exception ex) throws WebServiceClientException {
+				log.info("★afterCompletion: exception", ex);
+				log.info("★afterCompletion: response: {}", messageContext.getResponse());
+			}
+		};
+		
+		webServiceTemplate.setInterceptors(new ClientInterceptor[] { clientInterceptor, new MyClientInterceptor() });
+		try {
+//		webServiceTemplate.marshalSendAndReceive("http://localhost:8080/mtom-server/services/store2", storeContentRequest);
+			webServiceTemplate.marshalSendAndReceive("https://localhost:8443/mtom-server/services/store", storeContentRequest);
+//		webServiceTemplate.marshalSendAndReceive("http://localhost:8080/mtom-server/services/load", storeContentRequest);
+		} catch (RuntimeException e) {
+			log.info("★send fail.", e);
+			throw e;
+		}
 	}
 
 	public void loadContent() throws IOException {
-
 		LoadContentRequest loadContentRequest = this.objectFactory.createLoadContentRequest();
 		loadContentRequest.setName("spring-ws-logo");
-
 		String tmpDir = System.getProperty("java.io.tmpdir");
 		File out = new File(tmpDir, "spring_mtom_tmp.bin");
-
-		long freeBefore = Runtime.getRuntime().freeMemory();
-
-		this.stopWatch.start("load");
-
-		LoadContentResponse loadContentResponse = (LoadContentResponse) getWebServiceTemplate()
-				.marshalSendAndReceive("http://localhost:8080/mtom-server/services/load", loadContentRequest);
-
-		this.stopWatch.stop();
-
+		LoadContentResponse loadContentResponse = (LoadContentResponse) webServiceTemplate
+				.marshalSendAndReceive("https://localhost:8443/mtom-server/services/load", loadContentRequest);
 		DataHandler content = loadContentResponse.getContent();
-		long freeAfter = Runtime.getRuntime().freeMemory();
-
-		logger.info("Memory usage [kB]: " + ((freeAfter - freeBefore) / 1024));
-
-		this.stopWatch.start("loadAttachmentContent");
-
-		long size = saveContentToFile(content, out);
-
-		this.stopWatch.stop();
-
-		logger.info("Received file size [kB]: " + size);
-		logger.info("Stored at " + out.getAbsolutePath());
-		logger.info(this.stopWatch.prettyPrint());
+		saveContentToFile(content, out);
 	}
 
 	private static long saveContentToFile(DataHandler content, File outFile) throws IOException {

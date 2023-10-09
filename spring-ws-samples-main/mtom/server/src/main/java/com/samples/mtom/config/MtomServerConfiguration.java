@@ -8,18 +8,24 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.MethodParameter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurer;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
+import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.samples.mtom.schema.StoreContentResponse;
 import org.springframework.ws.server.EndpointInterceptor;
 import org.springframework.ws.server.endpoint.adapter.DefaultMethodEndpointAdapter;
 import org.springframework.ws.server.endpoint.adapter.method.MarshallingPayloadMethodProcessor;
+import org.springframework.ws.server.endpoint.adapter.method.MethodArgumentResolver;
+import org.springframework.ws.server.endpoint.interceptor.EndpointInterceptorAdapter;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.ws.wsdl.wsdl11.SimpleWsdl11Definition;
 
+import com.samples.mtom.ws.JaxWsMessageContextMethodArgumentResolver;
+import com.samples.mtom.ws.MyMethodArgumentResolver;
 import com.samples.mtom.ws.PayloadRootPathValidationEndpointInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +50,33 @@ public class MtomServerConfiguration {
 			@Override
 			public void addInterceptors(List<EndpointInterceptor> interceptors) {
 				interceptors.add(new PayloadRootPathValidationEndpointInterceptor(PAYLOADROOT_PATH_MAPPINGS));
+
+				interceptors.add(new EndpointInterceptorAdapter() {
+					@Override
+					public boolean handleRequest(MessageContext messageContext, Object endpoint) throws Exception {
+						messageContext.setProperty("testProp", "test");
+						return true;
+					}
+				});
+			}
+
+			@Override
+			public void addArgumentResolvers(List<MethodArgumentResolver> argumentResolvers) {
+				argumentResolvers.add(new MethodArgumentResolver() {
+					
+					@Override
+					public boolean supportsParameter(MethodParameter parameter) {
+						log.info("★ argument resolver: {}", parameter.getParameterType());
+						return false;
+					}
+					
+					@Override
+					public Object resolveArgument(MessageContext messageContext, MethodParameter parameter) throws Exception {
+						return null;
+					}
+				});
+				argumentResolvers.add(new MyMethodArgumentResolver());
+				argumentResolvers.add(new JaxWsMessageContextMethodArgumentResolver());
 			}
 		};
 	}

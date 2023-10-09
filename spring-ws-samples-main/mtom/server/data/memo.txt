@@ -1,0 +1,24 @@
+
+# キーペア作成（自己証明書付き）
+keytool -genkeypair -storetype PKCS12 -keystore mykeystore.p12 -alias mykeypair -v -keyalg RSA -keysize 2048 -validity 36500
+
+# 自己証明書のエクスポート
+keytool -exportcert -keystore mykeystore.p12 -storepass password -alias mykeypair -file mtom-server.cer
+
+# トラストストアの作成（インポート）
+keytool -import -file mtom-server.cer -alias mtom-server -keystore mtomTrustStore
+
+# 参考
+
+https://qiita.com/yasushi-jp/items/fc99965d8dcb82c084df
+https://ftpdocs.broadcom.com/cadocs/0/CA%20Network%20Flow%20Analysis%209%203%200-JPN/Bookshelf_Files/HTML/capc_SSO_UserGuide_ja_JP/2124881.html
+https://docs.oracle.com/cd/E19416-01/820-5959/ggfgo/index.html
+
+# 参考：クライアント側
+https://access.redhat.com/documentation/ja-jp/red_hat_enterprise_mrg/3/html/messaging_installation_and_configuration_guide/enable_ssl_in_java_clients
+
+# HttpClient5
+https://qiita.com/gosshys/items/df1ea26ba2e8c0860ae4
+
+# TrustStore
+https://www.tabnine.com/code/java/classes/javax.net.ssl.TrustManagerFactory
