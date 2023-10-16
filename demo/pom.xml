@@ -36,12 +36,14 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+		<!--
 		<dependency>
 		    <groupId>org.openapitools</groupId>
 		    <artifactId>jackson-databind-nullable</artifactId>
 		    <version>0.2.6</version>
 		</dependency>
-
+		-->
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -91,17 +93,18 @@
 			            <configuration>
 			                <inputSpec>${project.basedir}/src/main/openapi/petstore.yaml</inputSpec>
 			                <generatorName>spring</generatorName>
-							<apiPackage>com.example.api.demo.server.api</apiPackage>
-							<modelPackage>com.example.api.demo.server.model</modelPackage>
-							<invokerPackage>com.example.api.demo.server.invoker</invokerPackage>
+							<apiPackage>com.example.api.demo.server.api</apiPackage> <!-- Controller のパッケージ -->
+							<modelPackage>com.example.api.demo.server.model</modelPackage> <!-- Model のパッケージ -->
+							<!--<invokerPackage>com.example.api.demo.server.invoker</invokerPackage> -->
 							<packageName>com.example.api.demo.server</packageName>
 							<!--<library></library>-->
 							<modelNameSuffix>Resource</modelNameSuffix>
 							<generateModelDocumentation>false</generateModelDocumentation>
 							<generateApiDocumentation>false</generateApiDocumentation>
                             <configOptions>
-                            	<documentationProvider>none</documentationProvider>
                             	<interfaceOnly>true</interfaceOnly>
+                            	<documentationProvider>none</documentationProvider>
+                            	<openApiNullable>false</openApiNullable>
                             	<useJakartaEe>true</useJakartaEe>
                             	<useSpringBoot3>true</useSpringBoot3>
                             </configOptions>							
