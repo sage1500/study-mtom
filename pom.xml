@@ -12,6 +12,8 @@
 	<modules>
 		<module>demo</module>
 		<module>spring-ws-samples-main</module>
+		<module>rest-server</module>
+		<module>rest-client</module>
 	</modules>
 
 </project>
