@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: demo-application
+  
+  main:
+    banner-mode: log
+#    web-application-type: none
+
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+  
+  messages:
+    basename: messages
+    encoding: UTF-8
+
+#  datasource:
+#    driver-class-name: xxx
+#    url: xxx
+#    username: xx
+#    password: xx
+#    
+#    hikari:
+#      maximum-pool-size: 50
+#      minimum-idle: 5
+#      data-source-properties:
+#        xxx: yyy
+#
+#  transaction:
+#    default-timeout: 10s
+#
+#  sql:
+#    init:
+#      schema-locations:
+#      - xxx
+#      data-locations:
+#      - xxx
+
+server:
+  port: 8080
+#  servlet:
+#    context-path: /hoge
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: 30
+      min-spare: 5
+#    basedir: target/work/tomcat
+#  error:
+#    include-binding-errors: false
+#    include-exception: false
+#    include-stacktrace: never
+#
+#management:
+#
+              
+logging:
+#  config: classpath:logback.xml
+  level:
+    root: INFO
+    '[com.example]': DEBUG
+
+B_prop1: test
+
+demo:
+  prop1: d1
+  prop2: d2
+
