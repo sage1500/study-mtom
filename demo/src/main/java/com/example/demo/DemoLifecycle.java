@@ -12,10 +12,14 @@ import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class DemoLifecycle extends SimpleGracefulShutdownSmartLifecycleSupport {
 
+	private final DemoMapper mapper;
+	
 	@Value("${demo.core-pool-size:5}")
 	private int corePoolSize = 1;
 
@@ -63,7 +67,7 @@ public class DemoLifecycle extends SimpleGracefulShutdownSmartLifecycleSupport {
 		scheduler.afterPropertiesSet();
 
 		// 親タスク
-		parentTask = new DemoParentTask(childExecutor);
+		parentTask = new DemoParentTask(childExecutor, mapper);
 	}
 
 	@PreDestroy

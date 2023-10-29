@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DemoParentTask extends SimpleGracefulShutdownPollerTaskSupport<Integer> {
 
 	private final TaskExecutor executor;
+	private final DemoMapper mapper;
 
 	@Override
 	protected Integer poll() throws InterruptedException {
@@ -23,6 +24,6 @@ public class DemoParentTask extends SimpleGracefulShutdownPollerTaskSupport<Inte
 	@Override
 	protected void execute(Integer message) throws InterruptedException {
 		// 子タスクで実行
-		executor.execute(new DemoChildTask(message));
+		executor.execute(new DemoChildTask(message, mapper));
 	}
 }

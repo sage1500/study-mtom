@@ -13,20 +13,23 @@ spring:
     basename: messages
     encoding: UTF-8
 
-#  datasource:
-#    driver-class-name: xxx
-#    url: xxx
-#    username: xx
-#    password: xx
-#    
-#    hikari:
-#      maximum-pool-size: 50
-#      minimum-idle: 5
-#      data-source-properties:
-#        xxx: yyy
-#
-#  transaction:
-#    default-timeout: 10s
+  datasource:
+    # PostgreSQL JDBC Driver: https://github.com/pgjdbc/pgjdbc
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/todo
+    #url: jdbc:postgresql://192.168.1.100:5432/todo
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 5
+      data-source-properties:
+        #loginTimeout: 0
+        connectTimeout: 10
+        socketTimeout: 0
+
+  transaction:
+    default-timeout: 10s
 #
 #  sql:
 #    init:
@@ -58,6 +61,7 @@ logging:
   level:
     root: INFO
     '[com.example]': DEBUG
+    '[com.zaxxer.hikari]': DEBUG
 
 B_prop1: test
 
