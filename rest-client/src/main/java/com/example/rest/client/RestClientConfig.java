@@ -67,7 +67,7 @@ public class RestClientConfig {
 		// - タイムアウト
 		var requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		requestFactory.setConnectionRequestTimeout(connectTimeout); // コネクションプールから取得するタイムアウト
-		requestFactory.setConnectTimeout(connectTimeout);
+		// requestFactory.setConnectTimeout(connectTimeout);
 
 		// RestTemplate
         DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
@@ -81,6 +81,7 @@ public class RestClientConfig {
 		// - ベースパス
 		var apiClient = new ApiClient(restTemplate) //
 					.setBasePath("http://localhost:8080"); // memo: 最後に "/" をつけない
+					// .setBasePath("http://192.168.1.100:8080"); // ConnectionTimeout確認用
 		
 		// PetStore
 		return new PetsApi(apiClient);

@@ -36,7 +36,8 @@ public class RestServerController implements PetsApi {
 			throw new ErrorResponseException(HttpStatus.TOO_MANY_REQUESTS);
 		} else if (true) {
 			try {
-				Thread.sleep(9000);
+				//Thread.sleep(9000);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				throw new ErrorResponseException(HttpStatus.TOO_MANY_REQUESTS);
 			}

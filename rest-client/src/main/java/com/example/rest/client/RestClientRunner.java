@@ -26,21 +26,23 @@ public class RestClientRunner implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 		log.info("★START");
 
-		if (false) {
+		if (true) {
 			var pets = petApi.listPets(100);
 			log.info("Pets:");
 			pets.forEach(p -> log.info("  pet: {}", p));
 		} else {
 			var executor = Executors.newFixedThreadPool(20);
-			for (int i = 0; i < 14; i++) {
+			for (int i = 0; i < 20; i++) {
 				executor.execute(() -> {
-					log.info("call start");
-					try {
-						petApi.listPets(100);
-					} catch (Exception e) {
-						log.info("★error", e);
+					for (int j = 0; j < 5; j++) {
+						log.info("call start {}", j);
+						try {
+							petApi.listPets(100);
+						} catch (Exception e) {
+							log.info("★error", e);
+						}
+						log.info("call end {}", j);
 					}
-					log.info("call end");
 				});
 			}
 			executor.shutdown();

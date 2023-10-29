@@ -42,10 +42,10 @@ server:
   shutdown: graceful
   tomcat:
     threads:
-      max: 3
+      max: 20
       min-spare: 2
-    max-connections: 3
-    accept-count: 5
+    max-connections: 20
+    accept-count: 5 ## ほぼ同時に接続が来たときにどれだけ救うかという値
     ## (threads.max - max-connections) + accept-count + 4 程度がキューサイズ相当
 #    basedir: target/work/tomcat
 #  error:
