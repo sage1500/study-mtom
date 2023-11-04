@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.api.rest.server.api.PetsApi;
+import com.example.api.rest.server.api.PetsControllerInterface;
 import com.example.api.rest.server.model.NewPetResource;
 import com.example.api.rest.server.model.PetResource;
 
@@ -16,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping
+@RequestMapping("${demo.base-path:/v1}")
 @RequiredArgsConstructor
 @Slf4j
-public class RestServerController implements PetsApi {
+public class RestServerController implements PetsControllerInterface {
 	
 	private final MemoryPetRepository pets;
 

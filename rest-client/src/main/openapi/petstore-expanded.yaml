@@ -113,7 +113,7 @@ paths:
       description: deletes a single pet based on the ID supplied
       operationId: deletePet
       tags:
-        - pets2
+        - pets
       parameters:
         - name: id
           in: path

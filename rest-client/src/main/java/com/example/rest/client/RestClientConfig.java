@@ -14,7 +14,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
-import com.example.api.rest.client.api.PetsApi;
+import com.example.api.rest.client.api.PetsClient;
 import com.example.api.rest.client.invoker.ApiClient;
 
 @Configuration(proxyBeanMethods = false)
@@ -38,8 +38,7 @@ public class RestClientConfig {
 	@Value("${demo.retry-interval:1000}")
 	private int retryInterval = 1000;
 
-	@Value("${demo.base-url:http://localhost:8080}") // memo: 最後に "/" をつけない
-	//@Value("${demo.base-url:http://192.168.1.100:8080}") // ConnectionTimeout確認用
+	@Value("${demo.base-url:http://localhost:8080}")
 	private String baseUrl = "http://localhost:8080";
 
 	@Bean
@@ -60,12 +59,13 @@ public class RestClientConfig {
 				.setConnectionManagerShared(true) //
 				.setRetryStrategy(
 						new DefaultHttpRequestRetryStrategy(maxRetries, TimeValue.ofMilliseconds(retryInterval))) //
+				.addExecInterceptorFirst("logging", new RestClientInterceptor()) //
 				.build();
-
+		
 		// RequestFactory
 		var requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
 		requestFactory.setConnectionRequestTimeout(connectTimeout);
-
+		
 		// RestTemplate
 		DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
 		uriBuilderFactory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY);
@@ -77,10 +77,10 @@ public class RestClientConfig {
 	}
 
 	@Bean
-	public PetsApi petApi(RestTemplate restTemplateForPetsApi) {
+	public PetsClient petApi(RestTemplate restTemplateForPetsApi) {
 		var apiClient = new ApiClient(restTemplateForPetsApi) //
 				.setBasePath(baseUrl);
-		return new PetsApi(apiClient);
+		return new PetsClient(apiClient);
 	}
 
 }

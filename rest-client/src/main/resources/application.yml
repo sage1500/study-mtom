@@ -3,3 +3,5 @@ spring:
   main:
     web-application-type: none
 
+demo:
+  base-url: http://localhost:8080/v1

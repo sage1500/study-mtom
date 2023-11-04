@@ -74,6 +74,7 @@
                             <apiPackage>com.example.api.rest.server.api</apiPackage>
                             <modelPackage>com.example.api.rest.server.model</modelPackage>
                             <packageName>com.example.api.rest.server</packageName>
+                            <apiNameSuffix>ControllerInterface</apiNameSuffix>
                             <modelNameSuffix>Resource</modelNameSuffix>
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateApiDocumentation>false</generateApiDocumentation>

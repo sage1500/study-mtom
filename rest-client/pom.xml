@@ -68,12 +68,13 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/openapi/petstore.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/openapi/petstore-expanded.yaml</inputSpec>
                             <generatorName>java</generatorName>
                             <apiPackage>com.example.api.rest.client.api</apiPackage>
                             <modelPackage>com.example.api.rest.client.model</modelPackage>
                             <invokerPackage>com.example.api.rest.client.invoker</invokerPackage>
                             <packageName>com.example.api.rest.server</packageName>
+                            <apiNameSuffix>Client</apiNameSuffix>
                             <modelNameSuffix>Resource</modelNameSuffix>
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateApiDocumentation>false</generateApiDocumentation>
