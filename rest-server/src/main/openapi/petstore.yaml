@@ -67,6 +67,7 @@ paths:
           description: The id of the pet to retrieve
           schema:
             type: string
+            minLength: 2
       responses:
         '200':
           description: Expected response to a valid request

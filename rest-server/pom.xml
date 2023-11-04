@@ -69,7 +69,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/src/main/openapi/petstore.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/src/main/openapi/petstore-expanded.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <apiPackage>com.example.api.rest.server.api</apiPackage>
                             <modelPackage>com.example.api.rest.server.model</modelPackage>
